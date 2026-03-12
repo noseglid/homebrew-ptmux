@@ -9,6 +9,8 @@ class Ptmux < Formula
 
   def install
     bin.install "ptmux.sh" => "ptmux"
+    bash_completion.install "completions/ptmux.bash" => "ptmux"
+    zsh_completion.install "completions/_ptmux"
     (share/"fish/vendor_completions.d").install "completions/ptmux.fish"
   end
 
