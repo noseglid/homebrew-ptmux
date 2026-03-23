@@ -13,7 +13,10 @@ _ptmux() {
 
     local -a dirs
     dirs=(${(f)"$(find "$base_path" -mindepth 1 -maxdepth 2 -type d | sed "s|$base_path/||")"})
-    _describe 'project' dirs
+
+    _arguments \
+        '-k[Kill the session instead of starting/attaching]' \
+        '1:project:_describe "project" dirs'
 }
 
 _ptmux "$@"

@@ -10,7 +10,15 @@ _ptmux() {
     [[ -z "$base_path" || ! -d "$base_path" ]] && return
 
     local cur="${COMP_WORDS[COMP_CWORD]}"
-    COMPREPLY=($(compgen -W "$(find "$base_path" -mindepth 1 -maxdepth 2 -type d | sed "s|$base_path/||")" -- "$cur"))
+    local prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    # If completing the first argument, offer -k and projects
+    if [[ $COMP_CWORD -eq 1 ]]; then
+        COMPREPLY=($(compgen -W "-k $(find "$base_path" -mindepth 1 -maxdepth 2 -type d | sed "s|$base_path/||")" -- "$cur"))
+    # If -k was given, complete projects for the second argument
+    elif [[ $COMP_CWORD -eq 2 && "$prev" == "-k" ]]; then
+        COMPREPLY=($(compgen -W "$(find "$base_path" -mindepth 1 -maxdepth 2 -type d | sed "s|$base_path/||")" -- "$cur"))
+    fi
 }
 
 complete -F _ptmux ptmux
