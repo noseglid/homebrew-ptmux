@@ -1,7 +1,7 @@
 class Ptmux < Formula
   desc "Quick tmux session launcher for project directories"
   homepage "https://github.com/noseglid/homebrew-ptmux"
-  url "https://github.com/noseglid/homebrew-ptmux/archive/refs/tags/v0.1.1.tar.gz"
+  url "https://github.com/noseglid/homebrew-ptmux/archive/refs/tags/v0.2.0.tar.gz"
   license "MIT"
 
   depends_on "tmux"
