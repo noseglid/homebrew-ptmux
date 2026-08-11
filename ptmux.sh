@@ -53,13 +53,21 @@ if tmux has-session -t "=$session_name" 2>/dev/null; then
   exec tmux attach-session -t "=$session_name"
 fi
 
-tmux new-session -d -s "$session_name" -c "$project_path" -n editor
-tmux send-keys -t "$session_name:editor" 'nvim' Enter
+# One visible window: left slot (nvim) + terminal on the right.
+# claude waits in a hidden "alt" window; toggle_key swaps it into the left slot,
+# so the terminal pane is never touched.
+toggle_key='a'
 
-tmux new-window -t "$session_name" -c "$project_path" -n claude
-tmux send-keys -t "$session_name:claude" 'claude' Enter
+editor_pane="$(tmux new-session -d -s "$session_name" -c "$project_path" -n dev -P -F '#{pane_id}')"
+tmux split-window -h -l 40% -t "$editor_pane" -c "$project_path"
+tmux send-keys -t "$editor_pane" 'nvim' Enter
 
-tmux new-window -t "$session_name" -c "$project_path" -n terminal
+claude_pane="$(tmux new-window -d -t "$session_name" -c "$project_path" -n alt -P -F '#{pane_id}')"
+tmux send-keys -t "$claude_pane" 'claude' Enter
 
-tmux select-window -t "$session_name:editor"
+# Positional targets, so the binding keeps working after each swap
+pane_base="$(tmux show-options -gv pane-base-index 2>/dev/null || echo 0)"
+tmux bind-key "$toggle_key" swap-pane -s ":alt.$pane_base" -t ":dev.$pane_base"
+
+tmux select-pane -t "$editor_pane"
 exec tmux attach-session -t "$session_name"
