@@ -10,4 +10,4 @@ function __ptmux_base_path
 end
 
 complete -c ptmux -s k -d 'Kill the session instead of starting/attaching'
-complete -c ptmux -f -a '(set -l bp (__ptmux_base_path); test -n "$bp"; and find $bp -mindepth 1 -maxdepth 2 -type d | string replace "$bp/" "")'
+complete -c ptmux -f -a '(set -l bp (__ptmux_base_path); test -n "$bp"; and find $bp -mindepth 2 -maxdepth 3 -name .git -not -path "$bp/.*" | string replace "$bp/" "" | string replace -r "/\.git\$" "" | sort)'

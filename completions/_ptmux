@@ -12,7 +12,7 @@ _ptmux() {
     [[ -z "$base_path" || ! -d "$base_path" ]] && return
 
     local -a dirs
-    dirs=(${(f)"$(find "$base_path" -mindepth 1 -maxdepth 2 -type d | sed "s|$base_path/||")"})
+    dirs=(${(f)"$(find "$base_path" -mindepth 2 -maxdepth 3 -name .git -not -path "$base_path/.*" | sed "s|^$base_path/||; s|/\.git$||" | sort)"})
 
     _arguments \
         '-k[Kill the session instead of starting/attaching]' \

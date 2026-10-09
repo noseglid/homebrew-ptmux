@@ -14,10 +14,10 @@ _ptmux() {
 
     # If completing the first argument, offer -k and projects
     if [[ $COMP_CWORD -eq 1 ]]; then
-        COMPREPLY=($(compgen -W "-k $(find "$base_path" -mindepth 1 -maxdepth 2 -type d | sed "s|$base_path/||")" -- "$cur"))
+        COMPREPLY=($(compgen -W "-k $(find "$base_path" -mindepth 2 -maxdepth 3 -name .git -not -path "$base_path/.*" | sed "s|^$base_path/||; s|/\.git$||" | sort)" -- "$cur"))
     # If -k was given, complete projects for the second argument
     elif [[ $COMP_CWORD -eq 2 && "$prev" == "-k" ]]; then
-        COMPREPLY=($(compgen -W "$(find "$base_path" -mindepth 1 -maxdepth 2 -type d | sed "s|$base_path/||")" -- "$cur"))
+        COMPREPLY=($(compgen -W "$(find "$base_path" -mindepth 2 -maxdepth 3 -name .git -not -path "$base_path/.*" | sed "s|^$base_path/||; s|/\.git$||" | sort)" -- "$cur"))
     fi
 }
 

@@ -28,8 +28,17 @@ if [[ -z "$base_path" ]]; then
   exit 1
 fi
 
+# No arguments: attach to the first existing session, if any
+if [[ $# -eq 0 && $kill_mode -eq 0 ]]; then
+  first_session="$(tmux list-sessions -F '#{session_name}' 2>/dev/null | head -1 || true)"
+  if [[ -n "$first_session" ]]; then
+    exec tmux attach-session -t "=$first_session"
+  fi
+fi
+
 if [[ $# -ne 1 ]]; then
-  echo "Usage: $(basename "$0") [-k] <path-relative-to-$base_path>" >&2
+  echo "Usage: $(basename "$0") [-k] [<path-relative-to-$base_path>]" >&2
+  echo "  Without a path, attaches to the first existing session" >&2
   echo "Example: $(basename "$0") storytel/library-service" >&2
   echo "  -k  Kill the session instead of starting/attaching" >&2
   exit 1
